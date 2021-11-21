@@ -1,0 +1,36 @@
+{
+  "name": "jwt-nodejs-mongodb",
+  "version": "1.0.0",
+  "description": "Authentication with JWT and storage with MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Perch-01/JWT-NodeJs-MongoDB.git"
+  },
+  "keywords": [
+    "node.js",
+    "express",
+    "jwt",
+    "mongodb",
+    "authentication"
+  ],
+  "author": "Okoh Ugochukwu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Perch-01/JWT-NodeJs-MongoDB/issues"
+  },
+  "homepage": "https://github.com/Perch-01/JWT-NodeJs-MongoDB#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "http-status": "^1.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.13"
+  }
+}
