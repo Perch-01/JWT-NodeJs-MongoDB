@@ -7,39 +7,21 @@ const User = database.user;
  * has been used before 
  * @param {object} req
  * @param {object} res
- * @param {function} next
  */
 const checkDuplicateUsernameOrEmail = async (req, res, next) => {
     //Check if the username exists already
     const { username, email } = req.body;
-    User.findOne({
-        username: username
-    }).exec((err, user) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return;
-        }
-        if (user) {
-            res.status(400).send({ message: "Failed! Username is already in use!" });
-            return;
-        }
-
-        //Check if the email exists already
-        User.findOne({
-            email: email
-        }).exec((err, user) => {
-            if (err) {
-                res.status(500).send({ message: err });
-                return;
-            }
-            if (user) {
-                res.status(400).send({ message: "Failed! Email is already in use!" });
-                return;
-            }
-
-            next();
-        });
-    });
+    console.log("heree", username, email)
+    const user = await User.findOne({ username: username });
+    const user_ = await User.findOne({ email: email });
+    if (user) {
+        res.status(400).send({ message: "Middleware: Username is already in use!" });
+    }
+    if (user_) {
+        res.status(500).send({ message: "Middleware: Email is already in use!" });
+        return;
+    }
+    next();
 };
 
 /**
@@ -47,7 +29,6 @@ const checkDuplicateUsernameOrEmail = async (req, res, next) => {
  * request is valid
  * @param {object} req
  * @param {object} res
- * @param {function} next
  */
 const checkRolesExisted = async (req, res, next) => {
     const { roles } = req.body;

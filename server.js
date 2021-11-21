@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
+const routes = require('./app/routes');
 const databaseConfiguration = require('./app/config/database.config');
 var corsOptions = { origin: "http://localhost:8081" };
 
@@ -10,46 +11,51 @@ app.use(bodyParser.json()); //to parse requests of content type - application/js
 app.use(bodyParser.urlencoded({ extended: true })); //parse requests of content-type - application/x-www-form-urlencoded
 
 const database = require("./app/models");
+const config = require("./app/config/config.config");
 const Role = database.role;
 
 function initial() {
-    //This is an initial function to create the 3 types of Roles as database schemas 
-    Role.estimatedDocumentCount((err, count) => {//this gets the count
-        if (!err && count === 0) {
-            new Role({ name: "user" }).save(err => {
-                if (err) { console.log("error", err) }
-                console.log("Added 'user' to roles collection");
-            });
-            new Role({ name: "moderator" }).save(err => {
-                if (err) { console.log("error", err) }
-                console.log("Added 'moderator' to roles collection");
-            });
-            new Role({ name: "admin" }).save(err => {
-                if (err) { console.log("error", err) }
-                console.log("Added 'admin' to roles collection");
-            });
-        }
-    });
+  //This is an initial function to create the 3 types of Roles as database schemas 
+  Role.estimatedDocumentCount((err, count) => {//this gets the count
+    if (!err && count === 0) {
+      new Role({ name: "user" }).save(err => {
+        if (err) { console.log("error", err) }
+        console.log("Added 'user' to roles collection");
+      });
+      new Role({ name: "moderator" }).save(err => {
+        if (err) { console.log("error", err) }
+        console.log("Added 'moderator' to roles collection");
+      });
+      new Role({ name: "admin" }).save(err => {
+        if (err) { console.log("error", err) }
+        console.log("Added 'admin' to roles collection");
+      });
+    }
+  });
 }
 
 database.mongoose.connect(
-    `mongodb://${databaseConfiguration.HOST}:${databaseConfiguration.PORT}/${databaseConfiguration.DB}`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+  `mongodb+srv://${config.database.USER}:${config.database.PASSWORD}@cluster0.x7cta.mongodb.net/${config.database.NAME}?retryWrites=true&w=majority`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 }).then(() => {
-    console.log("Successfully connect to MongoDB.");
-    initial();
+  console.log("Successfully connect to MongoDB.");
+  initial();
 }).catch(err => {
-    console.error("Connection error", err);
-    process.exit();
+  console.error("Connection error", err);
+  process.exit();
 });
-
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to UGOS express server." });
+app.use('/', routes);
+// send back a 404 error for any unknown api request
+app.use((req, res, next) => {
+  next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
 });
+// app.get("/", (req, res) => {
+//     res.json({ message: "Welcome to ugos server." });
+// });
 
 // Port that listens for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
+  console.log(`Server is running on port ${PORT}.`);
 });
