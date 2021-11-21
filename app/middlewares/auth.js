@@ -11,13 +11,13 @@ const User = database.user;
 const checkDuplicateUsernameOrEmail = async (req, res, next) => {
     //Check if the username exists already
     const { username, email } = req.body;
+    console.log("heree", username, email)
     const user = await User.findOne({ username: username });
     const user_ = await User.findOne({ email: email });
-
     if (user) {
         res.status(400).send({ message: "Middleware: Username is already in use!" });
     }
-    if (!user_) {
+    if (user_) {
         res.status(500).send({ message: "Middleware: Email is already in use!" });
         return;
     }

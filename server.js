@@ -11,6 +11,7 @@ app.use(bodyParser.json()); //to parse requests of content type - application/js
 app.use(bodyParser.urlencoded({ extended: true })); //parse requests of content-type - application/x-www-form-urlencoded
 
 const database = require("./app/models");
+const config = require("./app/config/config.config");
 const Role = database.role;
 
 function initial() {
@@ -34,18 +35,22 @@ function initial() {
 }
 
 database.mongoose.connect(
-  `mongodb://${databaseConfiguration.HOST}:${databaseConfiguration.PORT}/${databaseConfiguration.DB}`, {
+  `mongodb+srv://${config.database.USER}:${config.database.PASSWORD}@cluster0.x7cta.mongodb.net/${config.database.NAME}?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => {
   console.log("Successfully connect to MongoDB.");
+  console.log(`mongodb://${databaseConfiguration.HOST}:${databaseConfiguration.PORT}/${databaseConfiguration.DATABASE}`);
   initial();
 }).catch(err => {
   console.error("Connection error", err);
   process.exit();
 });
 app.use('/', routes);
-
+// send back a 404 error for any unknown api request
+app.use((req, res, next) => {
+  next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
+});
 // app.get("/", (req, res) => {
 //     res.json({ message: "Welcome to ugos server." });
 // });
