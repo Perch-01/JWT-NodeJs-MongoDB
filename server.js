@@ -40,7 +40,6 @@ database.mongoose.connect(
   useUnifiedTopology: true
 }).then(() => {
   console.log("Successfully connect to MongoDB.");
-  console.log(`mongodb://${databaseConfiguration.HOST}:${databaseConfiguration.PORT}/${databaseConfiguration.DATABASE}`);
   initial();
 }).catch(err => {
   console.error("Connection error", err);

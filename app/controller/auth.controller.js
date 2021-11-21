@@ -47,7 +47,11 @@ const signUp = async (req, res) => {
 const signIn = async (req, res) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username: username })
-        .populate("roles", "-__v");//THIS
+        .populate("roles", "-__v");
+    /** Because we have a field called "roles" with an objectId Type and a ref of "Role",
+     *  we use "populate" to query the original "Role" field and add it to the user object. 
+    */
+
 
     if (!user) {
         res.status(500).send({ message: 'Controller: User not found' });
