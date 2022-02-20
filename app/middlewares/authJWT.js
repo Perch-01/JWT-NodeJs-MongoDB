@@ -11,10 +11,15 @@ const Role = database.role;
  * @param {object} res
  */
 const verifyToken = async (req, res, next) => {
-    const token = req.headers["x-access-token"];
+    let token = req.headers["x-access-token"] || req.headers["authorization"];
+
     if (!token) {
         return res.status(403).send({ message: "No token provided!" });
     }
+    else
+        token = token.substring(7, token.length);//Extract the token
+
+
     jwt.verify(//To verify the token
         token,
         config.secret,
